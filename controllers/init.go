@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/noovertime7/mysqlbak/modles"
@@ -12,7 +11,7 @@ import (
 type dBInfo struct {
 	engine   *xorm.Engine
 	database *modles.Database
-	CronJob  map[string]string
+	CronJob  map[string]*cron.Cron
 }
 
 func NewDBInfo(db *modles.Database) *dBInfo {
@@ -21,8 +20,9 @@ func NewDBInfo(db *modles.Database) *dBInfo {
 		log.Logger.Error("配置数据库引擎失败", err)
 		return nil
 	}
-	jobmap := make(map[string]string)
-	jobmap[db.DBName] = db.BackupCycle
+	c := cron.New(cron.WithSeconds())
+	jobmap := make(map[string]*cron.Cron)
+	jobmap[db.DBName] = c
 	return &dBInfo{
 		engine:   en,
 		database: db,
@@ -31,14 +31,14 @@ func NewDBInfo(db *modles.Database) *dBInfo {
 }
 
 func (d *dBInfo) StartBak() {
-	c := cron.New(cron.WithSeconds())
-	fmt.Println(d.CronJob)
-	fmt.Println(d.database.DBName)
-	cid, err := c.AddJob(d.database.BackupCycle, BakHandler{DbName: d.database.DBName})
-	if err != nil {
-		log.Logger.Error(err)
-		return
+	//c := cron.New(cron.WithSeconds())
+	for dbname, c := range d.CronJob {
+		cid, err := c.AddJob(d.database.BackupCycle, BakHandler{DbName: dbname})
+		if err != nil {
+			log.Logger.Error("定时任务添加失败", err)
+			return
+		}
+		log.Logger.Infof("启动任务:%d,备份数据库:%s,备份周期:%s,数据保留周期:%d天", cid, dbname, d.database.BackupCycle, d.database.KeepNumber)
+		c.Start()
 	}
-	log.Logger.Info(cid)
-	c.Start()
 }
