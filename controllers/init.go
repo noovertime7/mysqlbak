@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/noovertime7/mysqlbak/modles"
@@ -20,6 +21,7 @@ func NewDBInfo(db *modles.Database) *dBInfo {
 		log.Logger.Error("配置数据库引擎失败", err)
 		return nil
 	}
+	fmt.Println(db.DingConf.IsDingSend)
 	c := cron.New(cron.WithSeconds())
 	jobmap := make(map[string]*cron.Cron)
 	jobmap[db.DBName] = c
@@ -33,7 +35,9 @@ func NewDBInfo(db *modles.Database) *dBInfo {
 func (d *dBInfo) StartBak() {
 	//c := cron.New(cron.WithSeconds())
 	for dbname, c := range d.CronJob {
-		cid, err := c.AddJob(d.database.BackupCycle, BakHandler{DbName: dbname})
+		cid, err := c.AddJob(d.database.BackupCycle,
+			&BakHandler{DbName: dbname, dBInfo: d, IsDingSend: d.database.DingConf.IsDingSend,
+				IsOssSend: d.database.OssConf.IsOssSave})
 		if err != nil {
 			log.Logger.Error("定时任务添加失败", err)
 			return
