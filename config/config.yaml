@@ -6,7 +6,7 @@ BakConfig:
       password: "1qaz@WSX"
       DBName: ctblog
       isAllDBBak: true
-      BackupCycle:  "*/1 * * * * ? "
+      BackupCycle:  "*/1 * * * * ?"
       KeepNumber: 7
       DingConf:
         isDingSend: false
@@ -24,7 +24,7 @@ BakConfig:
       password: "1qaz@WSX"
       DBName: ctblogdddd
       isAllDBBak: false
-      BackupCycle:  "*/2 * * * * ? "
+      BackupCycle:  "*/10 * * * * ?"
       KeepNumber: 7
       DingConf:
         isDingSend: true

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/noovertime7/mysqlbak/modles"
 	"github.com/noovertime7/mysqlbak/pkg/log"
+	"github.com/robfig/cron"
 	"time"
 )
 
@@ -11,7 +11,8 @@ type Baker interface {
 }
 
 type BakHandler struct {
-	Bakdatabase *modles.Database
+	Cron   *cron.Cron
+	DbName string
 }
 
 //func NewBaker( db *modles.Database) *BakHandler{
@@ -19,7 +20,7 @@ type BakHandler struct {
 //}
 
 func (b BakHandler) Run() {
-	log.Logger.Info("开始备份", b.Bakdatabase.DBName)
+	log.Logger.Info("开始备份", b.DbName)
 	time.Sleep(2 * time.Second)
-	log.Logger.Info("备份成功")
+	log.Logger.Info("备份成功", b.DbName)
 }
