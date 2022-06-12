@@ -8,7 +8,7 @@ import (
 func Start() {
 	for _, db := range modles.SystemConf.Database {
 		dbi := controllers.NewDBInfo(&db)
-		dbi.StartBak()
+		go dbi.StartBak()
 	}
-	select {}
+	//select {}
 }

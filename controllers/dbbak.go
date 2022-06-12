@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/noovertime7/mysqlbak/pkg/log"
 	"github.com/robfig/cron"
 	"time"
@@ -30,7 +29,7 @@ func (b *BakHandler) Run() {
 	log.Logger.Info("开始备份", b.dBInfo.database.DBName)
 	time.Sleep(2 * time.Second)
 	log.Logger.Info("备份成功", b.DbName)
-	fmt.Println("定开关", b.IsDingSend)
+	log.Logger.Debugf("当前数据库:%s,开关状态:%v %v", b.DbName, b.IsDingSend, b.IsOssSend)
 	b.Status = true
 	err := b.AfterBakHandler()
 	if err != nil {

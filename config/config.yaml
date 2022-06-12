@@ -5,8 +5,11 @@ BakConfig:
       user: root
       password: "1qaz@WSX"
       DBName: ctblog
+      #是否备份全库
       isAllDBBak: true
+      #备份周期，crontab格式
       BackupCycle:  "*/1 * * * * ?"
+#      BackupCycle:  "00 1 * * * ?"
       KeepNumber: 7
       DingConf:
         isDingSend: false
@@ -24,10 +27,11 @@ BakConfig:
       password: "1qaz@WSX"
       DBName: ctblogdddd
       isAllDBBak: false
-      BackupCycle:  "*/10 * * * * ?"
+      BackupCycle:  "*/1 * * * * ?"
+#      BackupCycle:  "30 41 22 * * ?"
       KeepNumber: 7
       DingConf:
-        isDingSend: true
+        isDingSend: false
         webhook: https://oapi.dingtalk.com/robot/send?access_token=f7af721d634b0fafe6a01826d795aadf0454250430ea169ec32f9a507cab881a
       OssConf:
         isOssSave: false
